@@ -5,13 +5,25 @@ var express = require("express");
 var app = express();
 var cors = require("cors");
 var bodyParser = require("body-parser");
+var http = require('http');
 
 app.use(cors());
 app.use(bodyParser());
 
 var mongoose = require("mongoose");
 
-mongoose.connect('mongodb://localhost/qualcaddy')
+var uristring =
+    process.env.MONGOLAB_URI ||
+    process.env.MONGOHQ_URL ||
+    'mongodb://localhost/qualcaddy';
+
+mongoose.connect(uristring, function (err, res) {
+    if (err) {
+      console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+    } else {
+      console.log ('Succeeded connected to: ' + uristring);
+    }
+});
 
 var Qualification = mongoose.model('Qualification', {name: String, income: Number, debt: Number})
 
@@ -37,4 +49,9 @@ app.post("/qualification/add", function(req, res) {
     })
 })
 
-app.listen(3000);
+var server = http.createServer(app);
+
+var port = process.env.PORT || 3000;
+app.listen(port, function() {
+	console.log("Listening on " + port);
+});
