@@ -3,7 +3,7 @@
   "description": "QualCaddy App",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server/server.js"
   },
   "dependencies": {
     "express": "4.13.3",
