@@ -1,0 +1,14 @@
+{
+  "name": "QualCaddy",
+  "description": "QualCaddy App",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "4.13.3"
+    "cors": "1.1.0"
+    "body-parser": "1.14.2"
+  }
+}
+
