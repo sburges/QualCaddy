@@ -49,6 +49,8 @@ app.post("/qualification/add", function(req, res) {
     })
 })
 
+app.use(express.static(__dirname + '/build'));
+
 var server = http.createServer(app);
 
 var port = process.env.PORT || 3000;
