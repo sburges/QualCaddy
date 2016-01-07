@@ -29,6 +29,9 @@ var Qualification = mongoose.model('Qualification', {name: String, income: Numbe
 
 app.get("/qualification/", function(req, res) {
     Qualification.find(function(err, qualifications) {
+        console.log("Retreived records from DB: " +
+                qualifications
+        );
         res.send(qualifications);
     })
 })
@@ -43,7 +46,7 @@ app.post("/qualification/add", function(req, res) {
         income: income,
         debt: debt
     })
-    console.log("Saving new record to DB. " +
+    console.log("Saving new record to DB: " +
         qualification.name + ", " +
         qualification.income + ", " +
         qualification.debt
