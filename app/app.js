@@ -18,6 +18,16 @@ qualcaddy.controller("AppCtrl", function ($http) {
         })
     }
 
+    app.verify = function(newApplication){
+        $http.post(url + "verify", {
+            name: newApplication.name,
+            income: newApplication.income,
+            debt: newApplication.debt
+        }).success(function(){
+
+        })
+    }
+
     function loadApplications() {
         $http.get(url + "applications").success(function(applications) {
             app.applications = applications;

@@ -1,5 +1,6 @@
 
 var Applications = require('../models/applications');
+var ApplicationResults = require('../models/applicationresults');
 
 module.exports = function(app) {
     var baseurl = "/data";
