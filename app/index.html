@@ -29,8 +29,16 @@
     <button ng-click="app.saveApplication(app.newApplication)">Save</button>
 </p>
 <p>
-    <button ng-click="app.verify(app.newApplication)">Verify</button>
+    <button ng-click="app.verify(app.newApplication, app.applicationResult)">Verify</button>
 </p>
+<p>
+    <label>Approved? </label>
+    <input type="boolean" ng-model="app.applicationResult.result"/>
+<p/>
+<p>
+    <label>Reason: </label>
+    <input type="string" ng-model="app.applicationResult.reason"/>
+<p/>
 
 <script src="bower_components/angular/angular.js"></script>
 <script src="app.js"></script>

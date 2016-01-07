@@ -18,13 +18,13 @@ qualcaddy.controller("AppCtrl", function ($http) {
         })
     }
 
-    app.verify = function(newApplication){
+    app.verify = function(newApplication, result){
         $http.post(url + "verify", {
             name: newApplication.name,
             income: newApplication.income,
             debt: newApplication.debt
-        }).success(function(){
-
+        }).success(function(res){
+            result = res;
         })
     }
 
