@@ -9,7 +9,7 @@ qualcaddy.controller("AppCtrl", function ($http) {
    // var url = "http://localhost:3000/"
 
     app.saveQualification = function (newQualification) {
-        $http.post(url + "/qualification/add", {
+        $http.post(url + "qualification/add", {
             name: newQualification.name,
             income: newQualification.income,
             debt: newQualification.debt
@@ -19,7 +19,7 @@ qualcaddy.controller("AppCtrl", function ($http) {
     }
 
     function loadQualifications() {
-        $http.get(url + "/qualification").success(function(qualifications) {
+        $http.get(url + "qualification").success(function(qualifications) {
             app.qualifications = qualifications;
         })
     }
