@@ -46,6 +46,7 @@ app.post("/qualification/add", function(req, res) {
 
     qualification.save(function (err) {
         res.send();
+        console.log("Error saving record! " + err)
     })
 })
 
