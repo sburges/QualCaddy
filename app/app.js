@@ -5,7 +5,8 @@ var qualcaddy = angular.module("qualcaddy", []);
 
 qualcaddy.controller("AppCtrl", function ($http) {
     var app = this;
-    var url ="http://localhost:3000";
+    var url = "https://qualcaddy.herokuapp.com/";
+   // var url = "http://localhost:3000/"
 
     app.saveQualification = function (newQualification) {
         $http.post(url + "/qualification/add", {
@@ -24,6 +25,4 @@ qualcaddy.controller("AppCtrl", function ($http) {
     }
 
     loadQualifications();
-
-
 })
