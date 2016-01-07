@@ -6,23 +6,23 @@ var qualcaddy = angular.module("qualcaddy", []);
 qualcaddy.controller("AppCtrl", function ($http) {
     var app = this;
     var url = "https://qualcaddy.herokuapp.com/";
-   // var url = "http://localhost:3000/"
+    //var url = "http://localhost:3000/"
 
-    app.saveQualification = function (newQualification) {
-        $http.post(url + "qualification/add", {
-            name: newQualification.name,
-            income: newQualification.income,
-            debt: newQualification.debt
+    app.saveApplication = function (newApplication) {
+        $http.post(url + "applications/add", {
+            name: newApplication.name,
+            income: newApplication.income,
+            debt: newApplication.debt
         }).success(function () {
-            loadQualifications();
+            loadApplications();
         })
     }
 
-    function loadQualifications() {
-        $http.get(url + "qualification").success(function(qualifications) {
-            app.qualifications = qualifications;
+    function loadApplications() {
+        $http.get(url + "applications").success(function(applications) {
+            app.applications = applications;
         })
     }
 
-    loadQualifications();
+    loadApplications();
 })

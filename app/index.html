@@ -8,25 +8,25 @@
 <body ng-app="qualcaddy" ng-controller="AppCtrl as app">
 
 <ul>
-    <li ng-repeat="qualification in app.qualifications">
-        {{ qualification.name }}
+    <li ng-repeat="application in app.applications">
+        {{ application.name }}
     </li>
 </ul>
 
 <p>
     <label>Name: </label>
-    <input type="text" ng-model="app.newQualification.name"/>
+    <input type="text" ng-model="app.newApplication.name"/>
 <p/>
 <p>
     <label>Income: </label>
-    <input type="number" ng-model="app.newQualification.income"/>
+    <input type="number" ng-model="app.newApplication.income"/>
 <p/>
 <p>
     <label>Debt: </label>
-    <input type="number" ng-model="app.newQualification.debt"/>
+    <input type="number" ng-model="app.newApplication.debt"/>
 <p/>
 <p>
-    <button ng-click="app.saveQualification(app.newQualification)">Save</button>
+    <button ng-click="app.saveApplication(app.newApplication)">Save</button>
 </p>
 
 <script src="bower_components/angular/angular.js"></script>
