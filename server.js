@@ -43,6 +43,11 @@ app.post("/qualification/add", function(req, res) {
         income: income,
         debt: debt
     })
+    console.log("Saving new record to DB. " +
+        qualification.name + ", " +
+        qualification.income + ", " +
+        qualification.debt
+    );
 
     qualification.save(function (err) {
         res.send();
