@@ -49,7 +49,7 @@ app.post("/qualification/add", function(req, res) {
     })
 })
 
-app.use(express.static(__dirname + '/build'));
+app.use(express.static(__dirname + '/app'));
 
 var server = http.createServer(app);
 
