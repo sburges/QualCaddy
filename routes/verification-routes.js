@@ -11,7 +11,7 @@ module.exports = function(app) {
         var name = req.body.name;
         var income = req.body.income;
         var debt = req.body.debt;
-        var result = false;
+        var result = true;
         var reason = "You have been approved!";
 
         console.log("Received verify requests: " +

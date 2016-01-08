@@ -24,7 +24,7 @@ qualcaddy.controller("AppCtrl", function ($http) {
             income: newApplication.income,
             debt: newApplication.debt
         }).success(function(res){
-            result = res;
+            app.applicationResult = res;
         })
     }
 
