@@ -7,37 +7,44 @@
 </head>
 <body ng-app="qualcaddy" ng-controller="AppCtrl as app">
 
+<h1>QualCaddy</h1>
+<p></p>
+<h3>Application</h3>
 <label>Existing Applications: </label>
 <select name="applicationselect"
-        ng-model="app.newApplication"
-        ng-options="application.name for application in app.applications track by application.name">
+        ng-model="app.currentApplication"
+        ng-options="application.name for application in app.applications track by application.name"
+        ng-change="app.verify()">
 </select>
 
 
 <p>
     <label>Name: </label>
-    <input type="text" ng-model="app.newApplication.name"/>
+    <input type="text" ng-model="app.currentApplication.name"/>
 <p/>
 <p>
     <label>Income: </label>
-    <input type="number" ng-model="app.newApplication.income"/>
+    <input type="number" ng-change="app.verify()" ng-model="app.currentApplication.income"/>
 <p/>
 <p>
     <label>Debt: </label>
-    <input type="number" ng-model="app.newApplication.debt"/>
+    <input type="number" ng-change="app.verify()" ng-model="app.currentApplication.debt"/>
 <p/>
 <p>
+    <button ng-click="app.saveApplication()">Create New</button>
+    <button ng-click="app.deleteApplication()">Delete</button>
+    <button ng-click="app.updateApplication()">Update</button>
+</p>
+<h3>Status of Application</h3>
+<p>
     <label>Approved? </label>
-    <input readonly="true" type="checkbox" ng-model="app.applicationResult.result"/>
+    <input readonly="true" type="checkbox" disabled="disabled" ng-model="app.applicationResult.result"/>
 <p/>
 <p>
     <label>Reason: </label>
-    <input readonly="true" type="string" ng-model="app.applicationResult.reason"/>
+    <input style="width: 1000px; border: solid 0px black" readonly="true" type="string" ng-model="app.applicationResult.reason"/>
 <p/>
-<p>
-    <button ng-click="app.saveApplication(app.newApplication)">Create New</button>
-    <button ng-click="app.verify(app.newApplication, app.applicationResult)">Verify</button>
-</p>
+
 <script src="bower_components/angular/angular.js"></script>
 <script src="app.js"></script>
 </body>
