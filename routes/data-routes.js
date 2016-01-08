@@ -46,7 +46,7 @@ module.exports = function(app) {
             }
         );
         res.statusCode = 200;
-        res.send("Request to update application has been accepted");
+        res.send("Request to update application has been accepted.");
     });
 
     app.post("/applications", function(req, res) {
