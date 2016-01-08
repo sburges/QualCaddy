@@ -7,11 +7,12 @@
 </head>
 <body ng-app="qualcaddy" ng-controller="AppCtrl as app">
 
-<ul>
-    <li ng-repeat="application in app.applications">
-        {{ application.name }}
-    </li>
-</ul>
+<label>Existing Applications: </label>
+<select name="applicationselect"
+        ng-model="app.newApplication"
+        ng-options="application.name for application in app.applications track by application.name">
+</select>
+
 
 <p>
     <label>Name: </label>
@@ -26,20 +27,17 @@
     <input type="number" ng-model="app.newApplication.debt"/>
 <p/>
 <p>
-    <button ng-click="app.saveApplication(app.newApplication)">Save</button>
-</p>
-<p>
-    <button ng-click="app.verify(app.newApplication, app.applicationResult)">Verify</button>
-</p>
-<p>
     <label>Approved? </label>
-    <input type="checkbox" ng-model="app.applicationResult.result"/>
+    <input readonly="true" type="checkbox" ng-model="app.applicationResult.result"/>
 <p/>
 <p>
     <label>Reason: </label>
-    <input type="string" ng-model="app.applicationResult.reason"/>
+    <input readonly="true" type="string" ng-model="app.applicationResult.reason"/>
 <p/>
-
+<p>
+    <button ng-click="app.saveApplication(app.newApplication)">Create New</button>
+    <button ng-click="app.verify(app.newApplication, app.applicationResult)">Verify</button>
+</p>
 <script src="bower_components/angular/angular.js"></script>
 <script src="app.js"></script>
 </body>

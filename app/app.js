@@ -32,6 +32,10 @@ qualcaddy.controller("AppCtrl", function ($http) {
         $http.get(url + "applications").success(function(applications) {
             app.applications = applications;
         })
+        if(app.newApplication = null)
+        {
+            newApplication = app.applications[0];
+        }
     }
 
     loadApplications();
