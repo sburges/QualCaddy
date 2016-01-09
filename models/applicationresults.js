@@ -10,4 +10,4 @@ var applicationResultSchema = mongoose.Schema({
     reason: String
 })
 
-module.exports = mongoose.model('ApplicationResults', applicationResultSchema)
+module.exports = mongoose.model('ApplicationResults', applicationResultSchema);

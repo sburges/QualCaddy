@@ -2,12 +2,14 @@
  * Created by shayne on 1/7/16.
  */
 
-var Applications = require('../models/applications');
+var BankRequirements = require('../models/bankrequirements');
 var ApplicationResults = require('../models/applicationresults');
 
 module.exports = function(app) {
 
-    app.post("/verify/", function (req, res) {
+    app.bankRequirements = null;
+
+    app.post("/verify/:id", function (req, res) {
         var name = req.body.name;
         var income = req.body.income;
         var debt = req.body.debt;
@@ -20,7 +22,7 @@ module.exports = function(app) {
                 debt
         );
 
-        if(debt/income > 1)
+        if(debt/income > app.bankRequirements.debtToIncomeRatio)
         {
             result = false
             reason = "Debt to income ratio to high";
@@ -36,4 +38,19 @@ module.exports = function(app) {
 
         res.send(applicationResult);
     });
+
+    function loadRequirements(bankName)
+    {
+        BankRequirements.findOne({bankName: bankName}, handleLoad);
+    }
+
+    function handleLoad(err, bank){
+        if(!err)
+        {
+            app.bankRequirements = bank;
+        }
+    }
+
+    loadRequirements("WAMU");
+
 }

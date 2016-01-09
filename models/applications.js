@@ -10,4 +10,4 @@ var applicationSchema = mongoose.Schema({
     debt: Number
 })
 
-module.exports = mongoose.model('Applications', applicationSchema)
+module.exports = mongoose.model('Applications', applicationSchema);

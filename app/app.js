@@ -5,9 +5,11 @@ var qualcaddy = angular.module("qualcaddy", []);
 
 qualcaddy.controller("AppCtrl", function ($http) {
     var app = this;
+    //var url = System.getenv("APP_URL") || "http://localhost:3000/";
     var url = "https://qualcaddy.herokuapp.com/";
-    //var url = "http://localhost:3000/"
+
     var currentApplication = null;
+    var currentBank = null;
 
     app.saveApplication = function () {
         $http.post(url + "applications", {
@@ -37,7 +39,7 @@ qualcaddy.controller("AppCtrl", function ($http) {
 
     app.verify = function(){
         if(app.currentApplication != null) {
-            $http.post(url + "verify", {
+            $http.post(url + "verify/" + app.currentBank.bankName, {
                 name: app.currentApplication.name,
                 income: app.currentApplication.income,
                 debt: app.currentApplication.debt
@@ -55,5 +57,13 @@ qualcaddy.controller("AppCtrl", function ($http) {
         })
     }
 
-    loadApplications();
+    function loadBanks(){
+        $http.get(url + "banks").success(function(banks) {
+            app.banks = banks;
+            app.currentBank = app.banks[0];
+            loadApplications();
+        })
+    }
+
+    loadBanks();
 })

@@ -9,6 +9,12 @@
 
 <h1>QualCaddy</h1>
 <p></p>
+<h3>Bank</h3>
+<select name="applicationselect"
+        ng-model="app.currentBank"
+        ng-options="bank.bankName for bank in app.banks track by bank.bankName"
+        ng-change="app.verify()">
+</select>
 <h3>Application</h3>
 <label>Existing Applications: </label>
 <select name="applicationselect"

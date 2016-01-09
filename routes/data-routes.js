@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var Applications = require('../models/applications');
-var ApplicationResults = require('../models/applicationresults');
+var BankRequirements = require('../models/bankrequirements');
 
 module.exports = function(app) {
     var baseurl = "/data";
@@ -42,7 +42,11 @@ module.exports = function(app) {
             {multi: false},
             function(err, numAffected)
             {
-               console.log("Successfully updated " + numAffected + " rows.");
+                if(err){
+                    console.log("Error updating application: " + err);
+                }else{
+                    console.log("Successfully updated " + numAffected + " rows.");
+                }
             }
         );
         res.statusCode = 200;
@@ -74,9 +78,22 @@ module.exports = function(app) {
         );
 
         application.save(function (err) {
-            console.log("Error saving record! " + err)
+            if(err)
+                console.log("Error saving application: " + err)
+            else
+                console.log("Saved application record! ");
+
         })
         res.statusCode = 200;
         res.send("Request to add application accepted.");
     });
+
+    app.get("/banks", function(req, res){
+        BankRequirements.find(function(err, banks) {
+            console.log("Retreived records from DB: " +
+                banks
+            );
+            res.send(banks);
+        })
+    })
 };
