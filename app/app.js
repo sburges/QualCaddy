@@ -12,7 +12,6 @@ qualcaddy.controller("AppCtrl", function ($http) {
     var currentBank = null;
 
     app.saveApplication = function () {
-        app.currentApplication.bank = app.currentBank._id;
         $http.post(url + "applications",
             app.currentApplication
         ).success(function () {
@@ -29,7 +28,6 @@ qualcaddy.controller("AppCtrl", function ($http) {
     }
 
     app.updateApplication = function(){
-        app.currentApplication.bank = app.currentBank._id;
         $http.post(url + "applications/" + app.currentApplication._id,
             app.currentApplication
         ).success(function (res){
@@ -38,7 +36,6 @@ qualcaddy.controller("AppCtrl", function ($http) {
     }
 
     app.verify = function(){
-        app.currentApplication.bank = app.currentBank._id;
         if(app.currentApplication != null) {
             $http.post(url + "verify/", app.currentApplication)
                 .success(function (res) {
@@ -47,13 +44,30 @@ qualcaddy.controller("AppCtrl", function ($http) {
         }
     }
 
+    app.handleApplicationSelect = function(){
+        for(var i=0;i<app.banks.length;i++)
+        {
+            if(app.currentApplication.bank == app.banks[i]._id)
+            {
+                app.currentBank = app.banks[i];
+                break;
+            }
+        }
+        app.verify();
+    };
+
+    app.handleBankSelect = function(){
+        app.currentApplication.bank = app.currentBank._id;
+        app.verify();
+    };
+
     function loadApplications() {
         $http.get(url + "applications").success(function(applications) {
             app.applications = applications;
             app.currentApplication = app.applications[0];
             app.verify();
         })
-    }
+    };
 
     function loadBanks(){
         $http.get(url + "banks").success(function(banks) {
@@ -61,7 +75,7 @@ qualcaddy.controller("AppCtrl", function ($http) {
             app.currentBank = app.banks[0];
             loadApplications();
         })
-    }
+    };
 
     function loadConfigs(){
         $http.get(url + "config").success(

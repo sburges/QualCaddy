@@ -14,9 +14,9 @@
 <select name="applicationselect"
         ng-model="app.currentApplication"
         ng-options="application.name for application in app.applications track by application.name"
-        ng-change="app.verify()">
+        ng-change="app.handleApplicationSelect()">
+        <item>---CREATE NEW---</item>
 </select>
-
 
 <p>
     <label>Name: </label>
@@ -27,7 +27,7 @@
     <select name="applicationselect"
             ng-model="app.currentBank"
             ng-options="bank.bankName for bank in app.banks track by bank.bankName"
-            ng-change="app.verify()">
+            ng-change="app.handleBankSelect()">
     </select>
 </p>
 <p>
