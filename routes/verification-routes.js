@@ -9,20 +9,24 @@ module.exports = function(app) {
 
     app.bankRequirements = null;
 
-    app.post("/verify/:id", function (req, res) {
+    app.post("/verify", function (req, res) {
         var name = req.body.name;
         var income = req.body.income;
         var debt = req.body.debt;
+        var bank = req.body.bank;
         var result = true;
         var reason = "You have been approved!";
 
         console.log("Received verify requests: " +
                 name + ", " +
+                bank + ", " +
                 income + ", " +
                 debt
         );
 
-        if(debt/income > app.bankRequirements.debtToIncomeRatio)
+        bank = findBank(bank);
+
+        if(debt/income > bank.debtToIncomeRatio)
         {
             result = false
             reason = "Debt to income ratio to high";
@@ -39,18 +43,27 @@ module.exports = function(app) {
         res.send(applicationResult);
     });
 
-    function loadRequirements(bankName)
+    function loadRequirements()
     {
-        BankRequirements.findOne({bankName: bankName}, handleLoad);
-    }
+        BankRequirements.find(function(err, bankRequirements) {
+            if(!err) {
+                console.log("Retreived records from DB: " +
+                    bankRequirements
+                );
+                app.bankRequirements = bankRequirements;
+            }
+        });
+    };
 
-    function handleLoad(err, bank){
-        if(!err)
-        {
-            app.bankRequirements = bank;
+    function findBank(bank)
+    {
+        for(var i=0;i<app.bankRequirements.length;i++) {
+            if(app.bankRequirements[i]._id == bank)
+                return app.bankRequirements[i];
         }
+        return null;
     }
 
-    loadRequirements("WAMU");
+    loadRequirements();
 
 }

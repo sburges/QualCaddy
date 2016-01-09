@@ -26,11 +26,8 @@ mongoose.connect(uristring, function (err, res) {
 
 require('./routes/data-routes')(app);
 require('./routes/verification-routes')(app);
-
+require('./routes/configs')(app);
 app.use(express.static(__dirname + '/app'));
-app.get('/envs', function(req, res){res.send(
-    {url: process.env.APP_URL || "http://localhost:3000/"}
-)});
 
 
 var server = http.createServer(app);

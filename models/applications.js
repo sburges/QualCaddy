@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 
 var applicationSchema = mongoose.Schema({
     name: String,
+    bank: String,
     income: Number,
     debt: Number
 })

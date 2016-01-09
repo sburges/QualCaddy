@@ -61,22 +61,14 @@ module.exports = function(app) {
             return res.send('Error 400: Incorrect post syntax for creating an application. Missing properties.');
         }
 
-
-        var name = req.body.name;
-        var income = req.body.income;
-        var debt = req.body.debt;
-
-        var application = new Applications({
-            name: name,
-            income: income,
-            debt: debt
-        })
+        var application = new Applications(req.body)
         console.log("Saving new record to DB: " +
                 application.name + ", " +
+                application.bank + ", " +
                 application.income + ", " +
                 application.debt
         );
-
+        application._id = null;
         application.save(function (err) {
             if(err)
                 console.log("Error saving application: " + err)

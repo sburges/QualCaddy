@@ -5,18 +5,17 @@ var qualcaddy = angular.module("qualcaddy", []);
 
 qualcaddy.controller("AppCtrl", function ($http) {
     var app = this;
-    //var url = System.getenv("APP_URL") || "http://localhost:3000/";
+    //var url = "http://localhost:3000/";
     var url = "https://qualcaddy.herokuapp.com/";
 
     var currentApplication = null;
     var currentBank = null;
 
     app.saveApplication = function () {
-        $http.post(url + "applications", {
-            name: app.currentApplication.name,
-            income: app.currentApplication.income,
-            debt: app.currentApplication.debt
-        }).success(function () {
+        app.currentApplication.bank = app.currentBank._id;
+        $http.post(url + "applications",
+            app.currentApplication
+        ).success(function () {
             loadApplications();
         })
     }
@@ -30,6 +29,7 @@ qualcaddy.controller("AppCtrl", function ($http) {
     }
 
     app.updateApplication = function(){
+        app.currentApplication.bank = app.currentBank._id;
         $http.post(url + "applications/" + app.currentApplication._id,
             app.currentApplication
         ).success(function (res){
@@ -38,13 +38,11 @@ qualcaddy.controller("AppCtrl", function ($http) {
     }
 
     app.verify = function(){
+        app.currentApplication.bank = app.currentBank._id;
         if(app.currentApplication != null) {
-            $http.post(url + "verify/" + app.currentBank.bankName, {
-                name: app.currentApplication.name,
-                income: app.currentApplication.income,
-                debt: app.currentApplication.debt
-            }).success(function (res) {
-                app.applicationResult = res;
+            $http.post(url + "verify/", app.currentApplication)
+                .success(function (res) {
+                    app.applicationResult = res;
             })
         }
     }
@@ -65,5 +63,13 @@ qualcaddy.controller("AppCtrl", function ($http) {
         })
     }
 
+    function loadConfigs(){
+        $http.get(url + "config").success(
+            function(configs){
+                url = configs.url;
+            }
+        )};
+
+    loadConfigs();
     loadBanks();
 })
