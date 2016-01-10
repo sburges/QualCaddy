@@ -1,6 +1,7 @@
 /**
  * Created by shayneburgess on 1/6/16.
  */
+'use strict';
 var qualcaddy = angular.module("qualcaddy", []);
 
 qualcaddy.controller("AppCtrl", function ($http) {

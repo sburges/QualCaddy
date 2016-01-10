@@ -69,15 +69,17 @@ module.exports = function(app) {
                 application.debt
         );
         application._id = null;
-        application.save(function (err) {
-            if(err)
-                console.log("Error saving application: " + err)
-            else
-                console.log("Saved application record! ");
-
+        application.save(function (err, newapplcation) {
+            if (err) {
+                console.log("Error saving application: " + err);
+                res.status(500);
+                res.send(err);
+            }
+            else {
+                console.log("Saved application record! " + newapplcation);
+                res.send(newapplcation)
+            }
         })
-        res.statusCode = 200;
-        res.send("Request to add application accepted.");
     });
 
     app.get("/banks", function(req, res){
