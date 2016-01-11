@@ -46,6 +46,7 @@ module.exports = function(app) {
             res.send(applicationResult);
         }catch(err)
         {
+            console.log(err);
             res.status(500);
             res.send("Oops. Something went wrong.");
         }
