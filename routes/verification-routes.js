@@ -10,40 +10,45 @@ module.exports = function(app) {
     app.bankRequirements = null;
 
     app.post("/verify", function (req, res) {
-        var name = req.body.name;
-        var income = req.body.income;
-        var debt = req.body.debt;
-        var bank = req.body.bank;
-        var result = true;
-        var reason = "You have been approved!";
+        try {
+            var name = req.body.name;
+            var income = req.body.income;
+            var debt = req.body.debt;
+            var bank = req.body.bank;
+            var result = true;
+            var reason = "You have been approved!";
 
-        console.log("Received verify requests: " +
+            console.log("Received verify requests: " +
                 name + ", " +
                 bank + ", " +
                 income + ", " +
                 debt
-        );
+            );
 
-        console.log("Finding bank");
-        bank = findBank(bank);
+            console.log("Finding bank");
+            bank = findBank(bank);
 
-        console.log("Checking debt-to-income ratio");
-        if(debt/income > bank.debtToIncomeRatio)
+            console.log("Checking debt-to-income ratio: debt, income, bank.debtToIncomeRatio");
+            if (debt / income > bank.debtToIncomeRatio) {
+                result = false
+                reason = "Debt to income ratio to high";
+            }
+
+            console.log("Building response");
+            var applicationResult = new ApplicationResults({
+                name: name,
+                result: result,
+                reason: reason
+            });
+
+            console.log("Sending response: " + applicationResult);
+
+            res.send(applicationResult);
+        }catch(err)
         {
-            result = false
-            reason = "Debt to income ratio to high";
+            res.status(500);
+            res.send("Oops. Something went wrong.");
         }
-
-        console.log("Building response");
-        var applicationResult = new ApplicationResults({
-            name: name,
-            result: result,
-            reason: reason
-        });
-
-        console.log("Sending response: " + applicationResult);
-
-        res.send(applicationResult);
     });
 
     function loadRequirements()
