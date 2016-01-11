@@ -66,6 +66,7 @@ module.exports = function(app) {
                 return app.bankRequirements[i];
         }
         console.log("Was unable to find bank requirement from verify request with id:" + bank);
+        console.log("Current banks: " + app.bankRequirements)
         return null;
     }
 
