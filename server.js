@@ -9,6 +9,7 @@ var cors = require("cors");
 var bodyParser = require("body-parser");
 var http = require('http');
 var mongoose = require('mongoose');
+var Logging = require('./common/logging');
 
 var app = express();
 app.use(cors());
@@ -21,9 +22,9 @@ var uristring =
 
 mongoose.connect(uristring, function (err, res) {
     if (err) {
-      console.log ('ERROR connecting to: ' + uristring + '. ' + err);
+        Logging.log ('ERROR connecting to: ' + uristring + '. ' + err);
     } else {
-      console.log ('Succeeded connected to: ' + uristring);
+        Logging.log ('Succeeded connected to: ' + uristring);
     }
 });
 
@@ -37,5 +38,5 @@ var server = http.createServer(app);
 
 var port = process.env.PORT || 3000;
 app.listen(port, function() {
-	console.log("Listening on " + port);
+    Logging.log("Listening on " + port);
 });

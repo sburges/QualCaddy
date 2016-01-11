@@ -2,104 +2,159 @@ var mongoose = require('mongoose');
 
 var Applications = require('../models/applications');
 var BankRequirements = require('../models/bankrequirements');
+var Logging = require('../common/logging');
+var ResponseHelper = require('../common/response');
 
 module.exports = function(app) {
     var baseurl = "/data";
 
     app.get("/applications/", function(req, res) {
-        Applications.find(function(err, applications) {
-            console.log("Retreived records from DB: " +
-                applications
-            );
-            res.send(applications);
-        })
+        try{
+            Applications.find(function(err, applications) {
+                if(!err) {
+                    Logging.log("Retreived applications from DB: " + applications.length);
+                    ResponseHelper.sendResponseObject(res, applications);
+                }else{
+                    ResponseHelper.sendError(res, err, "Error getting application", 404, "Not found!")
+                }
+            })
+        }catch(err)
+        {
+            ResponseHelper.sendError(
+                res,
+                err,
+                "Internal server error in get applications.",
+                500,
+                "Internal server error!");
+        }
     });
 
     app.get("/applications/:id", function(req, res) {
-        Applications.findOne(
-            { _id: req.params.id},
-            function(err, application) {
-                console.log("Received request for application " +
-                    req.params.id);
-                res.send(application);
-            });
+        try {
+            Applications.findOne(
+                {_id: req.params.id},
+                function (err, application) {
+                    if(!err) {
+                        Logging.log("Received request for application " +
+                            req.params.id);
+                        ResponseHelper.sendResponseObject(res, application);
+                    }else{
+                        ResponseHelper.sendError(res, err, 404, "Application not found!");
+                    }
+                });
+        }catch(err)
+        {
+            ResponseHelper.sendError(
+                res,
+                err,
+                "Internal server error in get applications.",
+                500,
+                "Internal server error!");
+        }
     });
 
     app.delete("/applications/:id", function(req, res){
-        console.log("Received request to delete id: " + req.params.id);
-        Applications.remove({ _id: req.params.id }, function(err) {
-            if (!err) {
-                console.log("Successfully deleted application with _id:" + req.params.id +
-                    " and name: " + req.body.name);
-                res.statusCode = 200;
-            }
-            else {
-                console.log("Failed to deleted application with _id:" + req.params.id +
-                    " and name: " + req.body.name);
-                req.statusCode = 500;
-            }
-        });
-        res.send();
+        Logging.log("Received request to delete id: " + req.params.id);
+        try {
+            Applications.remove({_id: req.params.id}, function (err) {
+                if (!err) {
+                    Logging.log("Successfully deleted application with _id:" + req.params.id +
+                        " and name: " + req.body.name);
+                    ResponseHelper.sendEmpty(res);
+                }
+                else {
+                    ResponseHelper.sendError(res, err, 404, "Application not found!");
+                }
+            });
+            res.send();
+        }catch(err)
+        {
+            ResponseHelper.sendError(
+                res,
+                err,
+                "Internal server error in delete applications.",
+                500,
+                "Internal server error!");
+        }
     });
 
     app.post("/applications/:id", function(req, res){
-        console.log("Received request to edit application with id: " + req.params.id +
+        Logging.log("Received request to edit application with id: " + req.params.id +
                 req
         );
-        Applications.update(
-            { _id: req.params.id},
-            req.body,
-            {multi: false},
-            function(err, numAffected)
-            {
-                if(err){
-                    console.log("Error updating application: " + err);
-                    res.statusCode = 500;
-                    res.send(err);
-                }else{
-                    console.log("Successfully updated " + numAffected + " rows.");
-                    res.statusCode = 200;
-                    res.send(req.body);
+        try {
+            Applications.update(
+                {_id: req.params.id},
+                req.body,
+                {multi: false},
+                function (err, numAffected) {
+                    if (err) {
+                        ResponseHelper.sendError(res, err, "", 404, "Application not found!");
+                    } else {
+                        Logging.log("Successfully updated " + numAffected + " rows.");
+                        ResponseHelper.sendResponseObject(res, req.body);
+                    }
                 }
-            }
-        );
+            );
+        }catch(err)
+        {
+            ResponseHelper.sendError(
+                res,
+                err,
+                "Internal server error in get application by id.",
+                500,
+                "Internal server error!");
+        }
     });
 
     app.post("/applications", function(req, res) {
+        try {
+            if (!req.body.hasOwnProperty('name') || !req.body.hasOwnProperty('name') || !req.body.hasOwnProperty('name')) {
+                res.statusCode = 400;
+                return res.send('Error 400: Incorrect post syntax for creating an application. Missing properties.');
+            }
 
-        if(!req.body.hasOwnProperty('name') || !req.body.hasOwnProperty('name') || !req.body.hasOwnProperty('name'))
+            var application = new Applications(req.body)
+            Logging.log("Saving new record to DB: " + application.name);
+            application._id = null;
+            application.save(function (err, newapplcation) {
+                if (err) {
+                    ResponseHelper.sendError(res, err, 404, "Unable to add application!");
+                }
+                else {
+                    Logging.log("Saved application record! " + newapplcation);
+                    ResponseHelper.sendResponseObject(res, newapplcation);
+                }
+            })
+        }catch(err)
         {
-            res.statusCode = 400;
-            return res.send('Error 400: Incorrect post syntax for creating an application. Missing properties.');
+            ResponseHelper.sendError(
+                res,
+                err,
+                "Internal server error on insert application.",
+                500,
+                "Internal server error!");
         }
-
-        var application = new Applications(req.body)
-        console.log("Saving new record to DB: " +
-                application.name + ", " +
-                application.bank + ", " +
-                application.income + ", " +
-                application.debt
-        );
-        application._id = null;
-        application.save(function (err, newapplcation) {
-            if (err) {
-                console.log("Error saving application: " + err);
-                res.status(500);
-                res.send(err);
-            }
-            else {
-                console.log("Saved application record! " + newapplcation);
-                res.send(newapplcation)
-            }
-        })
     });
 
     app.get("/banks", function(req, res){
-        BankRequirements.find(function(err, banks) {
-            console.log("Retreived records from DB: " +
-                banks
-            );
-            res.send(banks);
-        })
+        try {
+            BankRequirements.find(function (err, banks) {
+                if(!err) {
+                    Logging.log("Retreived records from DB: " + banks);
+                    ResponseHelper.sendResponseObject(res, banks);
+                }else{
+                    ResponseHelper.sendError(res, err, "", 404, "Application not found!");
+                }
+            })
+        }catch(err)
+        {
+            ResponseHelper.sendError(
+                res,
+                err,
+                "Internal server error in get banks.",
+                500,
+                "Internal server error!");
+        }
     })
 };

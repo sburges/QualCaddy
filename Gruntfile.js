@@ -23,13 +23,15 @@ module.exports = function(grunt) {
             dev: {
                 options: {
                     script: 'server.js',
-                    node_env: 'development'
+                    node_env: 'development',
+                    debug_level: 'info'
                 }
             },
             prod: {
                 options: {
                     script: 'server.js',
-                    node_env: 'production'
+                    node_env: 'production',
+                    debug_level: 'error'
                 }
             },
             test: {
@@ -37,7 +39,7 @@ module.exports = function(grunt) {
                     script: 'server.js',
                     node_env: 'test',
                     background: true,
-                    debug: 'medium'
+                    debug_level: 'warning'
                 }
             }
         }
