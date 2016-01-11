@@ -101,7 +101,7 @@ module.exports = function(app) {
             ResponseHelper.sendError(
                 res,
                 err,
-                "Internal server error in get application by id.",
+                "Internal server error in editing application by id.",
                 500,
                 "Internal server error!");
         }
@@ -109,7 +109,7 @@ module.exports = function(app) {
 
     app.post("/applications", function(req, res) {
         try {
-            if (!req.body.hasOwnProperty('name') || !req.body.hasOwnProperty('name') || !req.body.hasOwnProperty('name')) {
+            if (!req.body.hasOwnProperty('name') || !req.body.hasOwnProperty('debt') || !req.body.hasOwnProperty('income')) {
                 res.statusCode = 400;
                 return res.send('Error 400: Incorrect post syntax for creating an application. Missing properties.');
             }

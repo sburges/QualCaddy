@@ -35,13 +35,6 @@ describe('REST API', function() {
         });
     });
 
- /*   it('should have a home page', function (done) {
-        request.get(baseUrl + 'index.html', function(err,res,body) {
-            expect(res.statusCode).to.equal(200);
-            done();
-        });
-    });*/
-
     it('should GET all banks', function (done) {
         request.get({url:baseUrl + '/banks', json:true}, function(err,res,body) {
             expect(res.statusCode).to.equal(200);
