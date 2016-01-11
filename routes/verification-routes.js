@@ -70,6 +70,31 @@ module.exports = function(app) {
         return null;
     }
 
+    function preLoad(bankName, debtToIncome) {
+        BankRequirements.findOne({bankName: bankName}, function(err, bankRequirement) {
+            if(bankRequirement != null) {
+                console.log("Retreived bankRequirement from DB skipping seed");
+            }else {
+
+                var requirement = new BankRequirements({
+                    bankName: bankName,
+                    debtToIncomeRatio: debtToIncome
+                });
+
+                requirement.save(function (err) {
+                    if(err)
+                        console.log("Error saving bankRequirement record! " + err);
+                    else {
+                        console.log("Saved bankRequirement record! ");
+                        loadRequirements();
+                    }
+                });
+            }
+        })
+    }
+
+    preLoad("WAMU", 1);
+    preLoad("BankOfBurgess", 0.5)
     loadRequirements();
 
 }
