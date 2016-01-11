@@ -31,6 +31,7 @@ mongoose.connect(uristring, function (err, res) {
 require('./routes/data-routes')(app);
 require('./routes/verification-routes')(app);
 require('./routes/configs')(app);
+require('./routes/admin-routes')(app);
 app.use(express.static(__dirname + '/app'));
 
 
