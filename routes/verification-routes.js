@@ -25,23 +25,18 @@ module.exports = function(app) {
                 debt
             );
 
-            console.log("Finding bank");
             bank = findBank(bank);
 
-            console.log("Checking debt-to-income ratio: debt, income, bank.debtToIncomeRatio");
             if (debt / income > bank.debtToIncomeRatio) {
                 result = false
                 reason = "Debt to income ratio to high";
             }
 
-            console.log("Building response");
             var applicationResult = new ApplicationResults({
                 name: name,
                 result: result,
                 reason: reason
             });
-
-            console.log("Sending response: " + applicationResult);
 
             res.send(applicationResult);
         }catch(err)
@@ -70,6 +65,7 @@ module.exports = function(app) {
             if(app.bankRequirements[i]._id == bank)
                 return app.bankRequirements[i];
         }
+        console.log("Was unable to find bank requirement from verify request with id:" + bank);
         return null;
     }
 
