@@ -7,13 +7,14 @@ var chai = require('chai');
 var request = require('request');
 
 var fakeapplication = {
-    name: "FakeUser",
-    bank: 0,
+    name: "FakePerson",
+    bank: "56914968b4d08adc3ba6194c",
     income: 100,
-    debt: 100
+    debt: 10000
 };
 
 var fakeUserid = 0;
+var passingDebtValue = 0;
 
 var expect = chai.expect;
 
@@ -41,6 +42,16 @@ describe('REST API', function() {
         });
     });*/
 
+    it('should GET all banks', function (done) {
+        request.get({url:baseUrl + '/banks', json:true}, function(err,res,body) {
+            expect(res.statusCode).to.equal(200);
+            expect(Array.isArray(body)).to.be.true;
+            expect(body[0]).to.have.property('bankName');
+            fakeapplication.bank = body[0]._id;
+            done();
+        });
+    });
+
     it('should POST an application', function (done) {
         request.post({url:baseUrl + '/applications', json:fakeapplication}, function(err,res,body) {
             expect(res.statusCode).to.equal(200);
@@ -48,7 +59,7 @@ describe('REST API', function() {
         });
     });
 
-    it('should GET an application', function (done) {
+    it('should GET all applications', function (done) {
         request.get({url:baseUrl + '/applications', json:true}, function(err,res,body) {
             expect(res.statusCode).to.equal(200);
             expect(Array.isArray(body)).to.be.true;
@@ -61,6 +72,49 @@ describe('REST API', function() {
                     break;
                 }
             }
+            done();
+        });
+    });
+
+    it('should GET an application', function (done) {
+        request.get({url:baseUrl + '/applications/' + fakeUserid, json:true}, function(err,res,body) {
+            expect(res.statusCode).to.equal(200);
+            expect(body).to.have.property('name');
+            expect(body.name).to.eql('FakePerson');
+            expect(body._id).to.eql(fakeUserid);
+            done();
+        });
+    });
+
+    it('verify should fail', function (done) {
+        request.post({url:baseUrl + '/verify', json:fakeapplication}, function(err,res,body) {
+            expect(res.statusCode).to.equal(200);
+            expect(body.result).to.eql(false);
+            done();
+        });
+    });
+
+    it('should update an application', function (done) {
+        fakeapplication.debt = passingDebtValue;
+        request.post({url:baseUrl + '/applications/' + fakeUserid, json:fakeapplication}, function(err,res,body) {
+            expect(res.statusCode).to.equal(200);
+            done();
+        });
+    });
+
+    it('should GET an application', function (done) {
+        request.get({url:baseUrl + '/applications/' + fakeUserid, json:true}, function(err,res,body) {
+            expect(res.statusCode).to.equal(200);
+            expect(body).to.have.property('debt');
+            expect(body.debt).to.eql(passingDebtValue);
+            done();
+        });
+    });
+
+    it('verify should pass', function (done) {
+        request.post({url:baseUrl + '/verify', json:fakeapplication}, function(err,res,body) {
+            expect(res.statusCode).to.equal(200);
+            expect(body.result).to.eql(true);
             done();
         });
     });

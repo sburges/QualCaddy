@@ -15,6 +15,16 @@ module.exports = function(app) {
         })
     });
 
+    app.get("/applications/:id", function(req, res) {
+        Applications.findOne(
+            { _id: req.params.id},
+            function(err, application) {
+                console.log("Received request for application " +
+                    req.params.id);
+                res.send(application);
+            });
+    });
+
     app.delete("/applications/:id", function(req, res){
         console.log("Received request to delete id: " + req.params.id);
         Applications.remove({ _id: req.params.id }, function(err) {
@@ -44,13 +54,15 @@ module.exports = function(app) {
             {
                 if(err){
                     console.log("Error updating application: " + err);
+                    res.statusCode = 500;
+                    res.send(err);
                 }else{
                     console.log("Successfully updated " + numAffected + " rows.");
+                    res.statusCode = 200;
+                    res.send(req.body);
                 }
             }
         );
-        res.statusCode = 200;
-        res.send("Request to update application has been accepted.");
     });
 
     app.post("/applications", function(req, res) {
