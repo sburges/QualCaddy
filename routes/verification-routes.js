@@ -4,6 +4,8 @@
 
 var BankRequirements = require('../models/bankrequirements');
 var ApplicationResults = require('../models/applicationresults');
+var Logging = require('../common/logging');
+var ResponseHelper = require('../common/response');
 
 module.exports = function(app) {
 
@@ -18,12 +20,7 @@ module.exports = function(app) {
             var result = true;
             var reason = "You have been approved!";
 
-            console.log("Received verify requests: " +
-                name + ", " +
-                bank + ", " +
-                income + ", " +
-                debt
-            );
+            Logging.log("Received verify request: " + name);
 
             bank = findBank(bank);
 
@@ -32,18 +29,14 @@ module.exports = function(app) {
                 reason = "Debt to income ratio to high";
             }
 
-            var applicationResult = new ApplicationResults({
+            ResponseHelper.sendResponseObject(res, new ApplicationResults({
                 name: name,
                 result: result,
                 reason: reason
-            });
-
-            res.send(applicationResult);
+            }));
         }catch(err)
         {
-            console.log(err);
-            res.status(500);
-            res.send("Oops. Something went wrong.");
+            ResponseHelper.sendError(res, err, 500, "Internal server error on verify: ");
         }
     });
 
@@ -51,7 +44,7 @@ module.exports = function(app) {
     {
         BankRequirements.find(function(err, bankRequirements) {
             if(!err) {
-                console.log("Retreived records from DB: " +
+                Logging.log("Retreived records from DB: " +
                     bankRequirements
                 );
                 app.bankRequirements = bankRequirements;
@@ -65,15 +58,15 @@ module.exports = function(app) {
             if(app.bankRequirements[i]._id == bank)
                 return app.bankRequirements[i];
         }
-        console.log("Was unable to find bank requirement from verify request with id:" + bank);
-        console.log("Current banks: " + app.bankRequirements)
+        Logging.log("Was unable to find bank requirement from verify request with id:" + bank);
+        Logging.log("Current banks: " + app.bankRequirements)
         return null;
     }
 
     function preLoad(bankName, debtToIncome) {
         BankRequirements.findOne({bankName: bankName}, function(err, bankRequirement) {
             if(bankRequirement != null) {
-                console.log("Retreived bankRequirement from DB skipping seed");
+                Logging.log("Retreived bankRequirement from DB skipping seed");
             }else {
 
                 var requirement = new BankRequirements({
@@ -83,9 +76,9 @@ module.exports = function(app) {
 
                 requirement.save(function (err) {
                     if(err)
-                        console.log("Error saving bankRequirement record! " + err);
+                        Logging.log("Error saving bankRequirement record! " + err);
                     else {
-                        console.log("Saved bankRequirement record! ");
+                        Logging.log("Saved bankRequirement record! ");
                         loadRequirements();
                     }
                 });
@@ -96,5 +89,4 @@ module.exports = function(app) {
     preLoad("WAMU", 1);
     preLoad("BankOfBurgess", 0.5)
     loadRequirements();
-
 }
