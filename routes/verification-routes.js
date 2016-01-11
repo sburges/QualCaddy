@@ -34,6 +34,7 @@ module.exports = function(app) {
             reason = "Debt to income ratio to high";
         }
 
+        console.log("Building response");
         var applicationResult = new ApplicationResults({
             name: name,
             result: result,
