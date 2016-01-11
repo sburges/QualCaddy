@@ -36,7 +36,8 @@ module.exports = function(grunt) {
                 options: {
                     script: 'server.js',
                     node_env: 'test',
-                    background: true
+                    background: true,
+                    debug: 'medium'
                 }
             }
         }

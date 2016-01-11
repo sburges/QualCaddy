@@ -24,8 +24,10 @@ module.exports = function(app) {
                 debt
         );
 
+        console.log("Finding bank");
         bank = findBank(bank);
 
+        console.log("Checking debt-to-income ratio");
         if(debt/income > bank.debtToIncomeRatio)
         {
             result = false
@@ -38,7 +40,7 @@ module.exports = function(app) {
             reason: reason
         });
 
-        console.log("Sending response: " + applicationResult)
+        console.log("Sending response: " + applicationResult);
 
         res.send(applicationResult);
     });

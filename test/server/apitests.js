@@ -8,7 +8,7 @@ var request = require('request');
 
 var fakeapplication = {
     name: "FakePerson",
-    bank: "56914968b4d08adc3ba6194c",
+    bank: "0",
     income: 100,
     debt: 10000
 };
