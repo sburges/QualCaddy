@@ -14,7 +14,7 @@ module.exports = function(app) {
     app.post("/verify", function (req, res) {
         try {
             var name = req.body.name;
-            var income = req.body.income;
+            var income = req.body.income.borrowers[0];
             var debt = req.body.debt;
             var bank = req.body.bank;
             var result = true;

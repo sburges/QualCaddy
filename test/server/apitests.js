@@ -5,15 +5,15 @@
 
 var chai = require('chai');
 var request = require('request');
+var Application = require('../../models/applications');
 
-var fakeapplication = {
+var fakeapplication = new Application({
     name: "FakePerson",
     bank: "0",
-    income: 100,
-    debt: 10000
-};
+    debt: 10000,
+    income: { borrowers: [100] }
+});
 
-var fakeUserid = 0;
 var passingDebtValue = 0;
 
 var expect = chai.expect;
@@ -61,7 +61,7 @@ describe('REST API', function() {
             {
                 if(body[i].name == fakeapplication.name)
                 {
-                    fakeUserid = body[0]._id;
+                    fakeapplication._id = body[0]._id;
                     break;
                 }
             }
@@ -70,11 +70,11 @@ describe('REST API', function() {
     });
 
     it('should GET an application', function (done) {
-        request.get({url:baseUrl + '/applications/' + fakeUserid, json:true}, function(err,res,body) {
+        request.get({url:baseUrl + '/applications/' + fakeapplication.id, json:true}, function(err,res,body) {
             expect(res.statusCode).to.equal(200);
             expect(body).to.have.property('name');
             expect(body.name).to.eql('FakePerson');
-            expect(body._id).to.eql(fakeUserid);
+            expect(body._id).to.eql(fakeapplication.id);
             done();
         });
     });
@@ -89,14 +89,14 @@ describe('REST API', function() {
 
     it('should update an application', function (done) {
         fakeapplication.debt = passingDebtValue;
-        request.post({url:baseUrl + '/applications/' + fakeUserid, json:fakeapplication}, function(err,res,body) {
+        request.post({url:baseUrl + '/applications/' + fakeapplication.id, json:fakeapplication}, function(err,res,body) {
             expect(res.statusCode).to.equal(200);
             done();
         });
     });
 
-    it('should GET an application', function (done) {
-        request.get({url:baseUrl + '/applications/' + fakeUserid, json:true}, function(err,res,body) {
+    it('should GET an updated application', function (done) {
+        request.get({url:baseUrl + '/applications/' + fakeapplication.id, json:true}, function(err,res,body) {
             expect(res.statusCode).to.equal(200);
             expect(body).to.have.property('debt');
             expect(body.debt).to.eql(passingDebtValue);
@@ -113,7 +113,7 @@ describe('REST API', function() {
     });
 
     it('should DELETE the test application', function (done) {
-        request.del({url:baseUrl + '/applications/' + fakeUserid, json:true}, function(err,res,body) {
+        request.del({url:baseUrl + '/applications/' + fakeapplication.id, json:true}, function(err,res,body) {
             expect(res.statusCode).to.equal(200);
             done();
         });

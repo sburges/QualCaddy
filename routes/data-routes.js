@@ -83,6 +83,7 @@ module.exports = function(app) {
                 req
         );
         try {
+            delete req.body._id;
             Applications.update(
                 {_id: req.params.id},
                 req.body,
