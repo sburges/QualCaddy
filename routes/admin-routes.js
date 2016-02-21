@@ -19,6 +19,7 @@ module.exports = function(app) {
                 req
         );
         try {
+            delete req.body._id;
             Banks.update(
                 {_id: req.params.id},
                 req.body,
