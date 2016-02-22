@@ -36,7 +36,7 @@ module.exports = function(app) {
             }));
         }catch(err)
         {
-            ResponseHelper.sendError(res, err, 500, "Internal server error on verify: ");
+            ResponseHelper.sendError(res, err, "", 500, "Internal server error on verify: ");
         }
     });
 
@@ -45,7 +45,7 @@ module.exports = function(app) {
         BankRequirements.find(function(err, bankRequirements) {
             if(!err) {
                 Logging.log("Retreived records from DB: " +
-                    bankRequirements
+                    bankRequirements.bankName
                 );
                 app.bankRequirements = bankRequirements;
             }
