@@ -111,7 +111,7 @@ module.exports = function(app) {
 
     app.post("/applications", function(req, res) {
         try {
-            if (!req.body.hasOwnProperty('name') || !req.body.hasOwnProperty('debt') || !req.body.hasOwnProperty('income')) {
+            if (!req.body.hasOwnProperty('name') || !req.body.hasOwnProperty('debt')) {
                 res.statusCode = 400;
                 return res.send('Error 400: Incorrect post syntax for creating an application. Missing properties.');
             }

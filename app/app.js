@@ -11,8 +11,10 @@ qualcaddy.controller("AppCtrl", function ($http) {
 
     var currentApplication = null;
     var currentBank = null;
+    var currentIncome = null;
 
     app.saveApplication = function () {
+        delete app.currentApplication._id
         $http.post(url + "applications",
             app.currentApplication
         ).success(function () {
@@ -38,6 +40,7 @@ qualcaddy.controller("AppCtrl", function ($http) {
 
     app.verify = function(){
         if(app.currentApplication != null) {
+            app.currentApplication.bank = app.currentBank._id;
             $http.post(url + "verify/", app.currentApplication)
                 .success(function (res) {
                     app.applicationResult = res;

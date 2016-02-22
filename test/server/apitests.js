@@ -12,7 +12,7 @@ var fakeapplication = new Application({
     name: "FakePerson",
     bank: "0",
     debt: 10000,
-    income: { borrowers: [100] }
+    incomedetails: { borrowers: [100] }
 });
 
 var fakefieldflag = new FieldFlags({

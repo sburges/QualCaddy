@@ -7,6 +7,7 @@ var mongoose = require('mongoose');
 var applicationSchema = mongoose.Schema({
     name: String,
     bank: String,
+    income: { type: Number, min: 0, default: 0 },
     debt: { type: Number, min: 0, default: 0 },
     borrower: {
         name: { type: String, default: '' },
@@ -34,7 +35,7 @@ var applicationSchema = mongoose.Schema({
         monthlyHOAInsurance: { type: Number, min: 0, default: 0 },
         propretyTax: { type: Number, min: 0, default: 0 }
     },
-    income: {
+    incomedetails: {
         borrowers: { type: [Number], default: [ 0 ] },
         properties: { type: [Number], default: [ 0 ] },
     },

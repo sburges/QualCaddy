@@ -14,7 +14,14 @@ module.exports = function(app) {
     app.post("/verify", function (req, res) {
         try {
             var name = req.body.name;
-            var income = req.body.income.borrowers[0];
+            var income = 0;
+            if(req.body.hasOwnProperty('incomedetails')) {
+                var income = req.body.incomedetails.borrowers[0];
+            }
+            if(income == 0 && req.body.hasOwnProperty('income'))
+            {
+                income = req.body.income;
+            }
             var debt = req.body.debt;
             var bank = req.body.bank;
             var result = true;
