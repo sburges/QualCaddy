@@ -6,12 +6,17 @@
 var chai = require('chai');
 var request = require('request');
 var Application = require('../../models/applications');
+var FieldFlags = require('../../models/fieldflags');
 
 var fakeapplication = new Application({
     name: "FakePerson",
     bank: "0",
     debt: 10000,
     income: { borrowers: [100] }
+});
+
+var fakefieldflag = new FieldFlags({
+    message: "Bad field"
 });
 
 var passingDebtValue = 0;
@@ -115,6 +120,45 @@ describe('REST API', function() {
     it('should DELETE the test application', function (done) {
         request.del({url:baseUrl + '/applications/' + fakeapplication.id, json:true}, function(err,res,body) {
             expect(res.statusCode).to.equal(200);
+            done();
+        });
+    });
+
+    it('should NOT GET the test application', function (done) {
+        request.get({url:baseUrl + '/applications/' + fakeapplication._id, json:true}, function(err,res,body) {
+            expect(res.statusCode).to.equal(404);
+            done();
+        });
+    });
+
+    it('should SAVE field flag', function (done) {
+        console.log("ID FROM TEST: " + fakefieldflag._id);
+        request.post({url:baseUrl + '/fieldflags', json:fakefieldflag}, function(err,res,body){
+            expect(res.statusCode).to.equal(200);
+            expect(body.message).to.eql(fakefieldflag.message);
+            done();
+        });
+    });
+
+    it('should GET a field flag', function (done) {
+        request.get({url:baseUrl + '/admin/fieldflags/' + fakefieldflag._id, json:true}, function(err,res,body) {
+            expect(res.statusCode).to.equal(200);
+            expect(body).to.have.property('message');
+            expect(body.message).to.eql(fakefieldflag.message);
+            done();
+        });
+    });
+
+    it('should DELETE the field flag', function (done) {
+        request.del({url:baseUrl + '/admin/fieldflags/' + fakefieldflag.id, json:true}, function(err,res,body) {
+            expect(res.statusCode).to.equal(200);
+            done();
+        });
+    });
+
+    it('should NOT GET a field flag', function (done) {
+        request.get({url:baseUrl + '/admin/fieldflags/' + fakefieldflag._id, json:true}, function(err,res,body) {
+            expect(res.statusCode).to.equal(404);
             done();
         });
     });

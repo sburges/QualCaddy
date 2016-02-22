@@ -8,11 +8,9 @@ var Applications = require('../models/applications');
 var Banks = require('../models/bankrequirements');
 var Logging = require('../common/logging');
 var ResponseHelper = require('../common/response');
+var FieldFlags = require('../models/fieldflags');
 
 module.exports = function(app) {
-    app.get("/nothing", function(req,res){
-       res.send("BLAH");
-    });
 
     app.post("/admin/banks/:id", function(req, res){
         Logging.log("Received request to edit bank with id: " + req.params.id +
@@ -54,7 +52,7 @@ module.exports = function(app) {
                     ResponseHelper.sendEmpty(res);
                 }
                 else {
-                    ResponseHelper.sendError(res, err, 404, "Application not found!");
+                    ResponseHelper.sendError(res, err, "", 404, "Application not found!");
                 }
             });
             res.send();
@@ -81,10 +79,10 @@ module.exports = function(app) {
             bank._id = null;
             bank.save(function (err, bank) {
                 if (err) {
-                    ResponseHelper.sendError(res, err, 404, "Unable to add application!");
+                    ResponseHelper.sendError(res, err, "", 404, "Unable to add application!");
                 }
                 else {
-                    Logging.log("Saved application record! " + bank);
+                    Logging.log("Saved bank record: " + bank.bankName);
                     ResponseHelper.sendResponseObject(res, bank);
                 }
             })
@@ -104,12 +102,12 @@ module.exports = function(app) {
             Banks.findOne(
                 {_id: req.params.id},
                 function (err, bank) {
-                    if(!err) {
+                    if(!err && bank) {
                         Logging.log("Received request for bank " +
                             req.params.id);
                         ResponseHelper.sendResponseObject(res, bank);
                     }else{
-                        ResponseHelper.sendError(res, err, 404, "Bank not found!");
+                        ResponseHelper.sendError(res, err, "", 404, "Bank not found!");
                     }
                 });
         }catch(err)
@@ -118,6 +116,54 @@ module.exports = function(app) {
                 res,
                 err,
                 "Internal server error in get bank.",
+                500,
+                "Internal server error!");
+        }
+    });
+
+    app.get("/admin/fieldflags/:id", function(req, res) {
+        try {
+            FieldFlags.findOne(
+                {_id: req.params.id},
+                function (err, fieldflag) {
+                    if(!err && fieldflag) {
+                        Logging.log("Received request for field flag " +
+                            req.params.id);
+                        ResponseHelper.sendResponseObject(res, fieldflag);
+                    }else{
+                        ResponseHelper.sendError(res, err, "", 404, "Field flag not found!");
+                    }
+                });
+        }catch(err)
+        {
+            ResponseHelper.sendError(
+                res,
+                err,
+                "Internal server error in getting field flag.",
+                500,
+                "Internal server error!");
+        }
+    });
+
+    app.delete("/admin/fieldflags/:id", function(req, res){
+        Logging.log("Received request to field flag id: " + req.params.id);
+        try {
+            FieldFlags.remove({_id: req.params.id}, function (err) {
+                if (!err) {
+                    Logging.log("Successfully deleted field flag with _id:" + req.params.id);
+                    ResponseHelper.sendEmpty(res);
+                }
+                else {
+                    ResponseHelper.sendError(res, err, "", 404, "Field flag not found!");
+                }
+            });
+            res.send();
+        }catch(err)
+        {
+            ResponseHelper.sendError(
+                res,
+                err,
+                "Internal server error in delete field flag.",
                 500,
                 "Internal server error!");
         }

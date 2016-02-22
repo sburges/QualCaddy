@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 
 var Applications = require('../models/applications');
 var BankRequirements = require('../models/bankrequirements');
+var FieldFlags = require('../models/fieldflags');
 var Logging = require('../common/logging');
 var ResponseHelper = require('../common/response');
 
@@ -11,7 +12,7 @@ module.exports = function(app) {
     app.get("/applications/", function(req, res) {
         try{
             Applications.find(function(err, applications) {
-                if(!err) {
+                if(!err && applications) {
                     Logging.log("Retreived applications from DB: " + applications.length);
                     ResponseHelper.sendResponseObject(res, applications);
                 }else{
@@ -34,12 +35,12 @@ module.exports = function(app) {
             Applications.findOne(
                 {_id: req.params.id},
                 function (err, application) {
-                    if(!err) {
+                    if(!err && application) {
                         Logging.log("Received request for application " +
                             req.params.id);
                         ResponseHelper.sendResponseObject(res, application);
                     }else{
-                        ResponseHelper.sendError(res, err, 404, "Application not found!");
+                        ResponseHelper.sendError(res, err, "", 404, "Application not found!");
                     }
                 });
         }catch(err)
@@ -63,7 +64,7 @@ module.exports = function(app) {
                     ResponseHelper.sendEmpty(res);
                 }
                 else {
-                    ResponseHelper.sendError(res, err, 404, "Application not found!");
+                    ResponseHelper.sendError(res, err, "", 404, "Application not found!");
                 }
             });
             res.send();
@@ -117,13 +118,12 @@ module.exports = function(app) {
 
             var application = new Applications(req.body)
             Logging.log("Saving new record to DB: " + application.name);
-            application._id = null;
             application.save(function (err, newapplcation) {
                 if (err) {
-                    ResponseHelper.sendError(res, err, 404, "Unable to add application!");
+                    ResponseHelper.sendError(res, err, "", 404, "Unable to add application!");
                 }
                 else {
-                    Logging.log("Saved application record! " + newapplcation);
+                    Logging.log("Saved application record! " + newapplcation.id);
                     ResponseHelper.sendResponseObject(res, newapplcation);
                 }
             })
@@ -141,11 +141,11 @@ module.exports = function(app) {
     app.get("/banks", function(req, res){
         try {
             BankRequirements.find(function (err, banks) {
-                if(!err) {
-                    Logging.log("Retreived records from DB: " + banks);
+                if(!err && banks) {
+                    Logging.log("Retreived records from DB: " + banks.id);
                     ResponseHelper.sendResponseObject(res, banks);
                 }else{
-                    ResponseHelper.sendError(res, err, "", 404, "Application not found!");
+                    ResponseHelper.sendError(res, err, "", 404, "Banks not found!");
                 }
             })
         }catch(err)
@@ -154,6 +154,30 @@ module.exports = function(app) {
                 res,
                 err,
                 "Internal server error in get banks.",
+                500,
+                "Internal server error!");
+        }
+    });
+
+    app.post("/fieldflags", function(req, res){
+        try {
+            var fieldflagged = new FieldFlags(req.body)
+            Logging.log("Saving field flag: " + fieldflagged.message);
+            fieldflagged.save(function (err, newfieldflagged) {
+                if (err) {
+                    ResponseHelper.sendError(res, err, "", 404, "Unable to add field flag!");
+                }
+                else {
+                    Logging.log("Saved field flag: " + newfieldflagged._id);
+                    ResponseHelper.sendResponseObject(res, newfieldflagged);
+                }
+            })
+        }catch(err)
+        {
+            ResponseHelper.sendError(
+                res,
+                err,
+                "Internal server error on saving flagged field.",
                 500,
                 "Internal server error!");
         }
