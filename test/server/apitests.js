@@ -5,8 +5,8 @@
 
 var chai = require('chai');
 var request = require('request');
-var Application = require('../../models/applications');
-var FieldFlags = require('../../models/fieldflags');
+var Application = require('../../app/models/applications');
+var FieldFlags = require('../../app/models/fieldflags');
 
 var fakeapplication = new Application({
     name: "FakePerson",
