@@ -2,7 +2,7 @@
  * Created by shayneburgess on 1/10/16.
  */
 
-var Logging = require('../common/logging');
+var Logging = require('./logging');
 
 module.exports = {
     sendError: function(res, err, logmessage, statusCode, responsemessage) {

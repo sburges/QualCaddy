@@ -2,16 +2,17 @@
  * Created by shayneburgess on 1/6/16.
  */
 
-var mongoose = require('mongoose');
+var mongoose = require('mongoose')
+    , Schema = mongoose.Schema;
+var borrowerSchema = require('./borrowers');
+var bankrequirements = require('./bankrequirements');
 
 var applicationSchema = mongoose.Schema({
     name: String,
-    bank: String,
+    bank: { type: Schema.Types.ObjectId, ref: 'bankrequirements' },
     income: { type: Number, min: 0, default: 0 },
     debt: { type: Number, min: 0, default: 0 },
-    borrower: {
-        name: { type: String, default: '' },
-    },
+    borrower: [{ type: Schema.Types.ObjectId, ref: 'borrowers' }],
     loaninformation: {
         state: String,
         country: String,
@@ -43,6 +44,12 @@ var applicationSchema = mongoose.Schema({
         properties: { type: [Number], default: [ 0 ] },
         otherliabilities: { type: Number, min: 0, default: 0 },
         primaryPTI: { type: Number, min: 0, default: 0 }
+    },
+    borrowerdetails: {
+        willOccupy: { type: Boolean, default: true },
+        expectedLoanLength: { type: Number, min: 0, default: 0 },
+        useGiftFunds: { type: Boolean, default: false },
+        useTrust: { type: Boolean, default: false }
     }
 })
 
