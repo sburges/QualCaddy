@@ -9,7 +9,7 @@ var cors = require("cors");
 var bodyParser = require("body-parser");
 var http = require('http');
 var mongoose = require('mongoose');
-var Logging = require('./common/logging');
+var Logging = require('./app/common/logging');
 
 var app = express();
 app.use(cors());
@@ -28,10 +28,10 @@ mongoose.connect(uristring, function (err, res) {
     }
 });
 
-require('./routes/data-routes')(app);
-require('./routes/verification-routes')(app);
-require('./routes/configs')(app);
-require('./routes/admin-routes')(app);
+require('./app/routes/data-routes')(app);
+require('./app/routes/verification-routes')(app);
+require('./app/routes/configs')(app);
+require('./app/routes/admin-routes')(app);
 app.use(express.static(__dirname + '/app'));
 
 
