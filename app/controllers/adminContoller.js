@@ -2,10 +2,9 @@
  * Created by shayne on 1/11/16.
  */
 
-var mongoose = require('mongoose');
-
-var Applications = require('../models/applications');
-var Banks = require('../models/bankrequirements');
+var mongoose = require('mongoose'),
+    Applications = require('../models/applications'),
+    Banks = require('../models/bankrequirements');
 var Logging = require('../common/logging');
 var ResponseHelper = require('../common/response');
 var FieldFlags = require('../models/fieldflags');

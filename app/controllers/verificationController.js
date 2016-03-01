@@ -9,6 +9,8 @@ var ResponseHelper = require('../common/response');
 
 module.exports = function(app) {
 
+    app.controller('verificationController')
+
     app.bankRequirements = null;
 
     app.post("/verify", function (req, res) {
@@ -16,7 +18,7 @@ module.exports = function(app) {
             var name = req.body.name;
             var income = 0;
             if(req.body.hasOwnProperty('incomedetails')) {
-                var income = req.body.incomedetails.borrowers[0];
+                income = req.body.incomedetails.borrowers[0];
             }
             if(income == 0 && req.body.hasOwnProperty('income'))
             {
@@ -57,7 +59,7 @@ module.exports = function(app) {
                 app.bankRequirements = bankRequirements;
             }
         });
-    };
+    }
 
     function findBank(bank)
     {
