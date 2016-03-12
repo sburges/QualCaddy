@@ -17,23 +17,13 @@ module.exports = function(app) {
 
             var application = new Application(req.body);
 
-            var result = new ApplicationResult();
-            result.result = true;
-            result.reason = "You have been approved!";
-
             Logging.log("Received verify request: " + application.name);
 
             var bank = verifier.findBank(application.bank);
             if(bank == null)
                 throw "Unable to find bank specified in application";
 
-            result.LTVGuideline = verifier.calculateLTVGuideline(application, bank);
-            //result.LTVActual
-
-            if (application.debt / application.income > bank.debtToIncomeRatio) {
-                result.result = false;
-                result.reason = "Debt to income ratio to high";
-           }
+            var result = verifier.calculateFullResult(application, bank);
 
             ResponseHelper.sendResponseObject(res, result);
         }catch(err)

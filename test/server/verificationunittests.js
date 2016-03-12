@@ -70,6 +70,9 @@ var fakeBank = new BankRequirement({
         maxLTV2: 0.8,
         maxLTV3: 0.7,
         maxLTV4: 0.65
+    },
+    DTI: {
+        maxDTI: 0.49
     }
 });
 
@@ -107,5 +110,22 @@ describe('VERIFICATION UNIT TESTS', function() {
         done();
     });
 
+    it('should calculate LTV Actual', function (done) {
+        var guideline = verifier.calculateLTVActual(fakeapplication, fakeBank);
+        expect(guideline).to.equal(0.8);
+        done();
+    });
+
+    it('should calculate DTI Guideline', function (done) {
+        var guideline = verifier.calculateDTIGuideline(fakeapplication, fakeBank);
+        expect(guideline).to.equal(0.49);
+        done();
+    });
+
+    it('should calculate DTI Actual', function (done) {
+        var guideline = verifier.calculateDTIActual(fakeapplication, fakeBank);
+        expect(guideline).to.equal(0.4887);
+        done();
+    });
 
 });
