@@ -11,17 +11,58 @@ var FieldFlags = require('../../app/models/fieldflags');
 var fakeapplication = new Application({
     name: "FakePerson",
     bank: "0",
-    debt: 10000,
-    incomedetails: { borrowers: [100] }
+    debt: 10001,
+    income: 10000,
+    loaninformation: {
+        state: "CALIFORNIA",
+        country: "San Mateo",
+        purpose: "Purchase",
+        loantype: "PREFERRED",
+        loanCategory: "GOVT & NON-CONFORM",
+        loanProduct: "10 Year ARM",
+        purchasePrice: 1500000,
+        downpayment: 20,
+        pmiFactor: 0,
+        estimatedClosingCosts: 10000,
+        firstMortgageRate: 3.65,
+        lengthOfFirstMortgage: 30,
+        secondMortgageRate: 0,
+        secondLoanAmount: 0,
+        secondLoanType: "FHA"
+    },
+    propertyinformation: {
+        occupancyType: "Primary Residence",
+        numberofUnits: 1,
+        monthlyHOAInsurance: 250,
+        propertyTax: 1.25
+    },
+    incomedetails: {
+        borrowers: [10000,5000],
+        properties: [5000]
+    },
+    liabilities: {
+        properties: [3500],
+        otherliabilities: 150,
+        primaryPTI: 0
+    },
+    borrowerdetails: {
+        willOccupy: true,
+        expectedLoanLength: 30,
+        useGiftFunds: false,
+        useTrust: false
+    }
 });
 
 var fakefieldflag = new FieldFlags({
     message: "Bad field"
 });
 
-var passingDebtValue = 0;
+var passingDebtValue = 1;
 
 var expect = chai.expect;
+
+
+
 
 describe('Testing testing', function(){
     it('should pass a simple test: true = true', function() {
