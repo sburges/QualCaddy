@@ -2,83 +2,68 @@
  * Created by shayne on 1/7/16.
  */
 
-var BankRequirements = require('../models/bankrequirements');
-var ApplicationResults = require('../models/applicationresults');
+var BankRequirement = require('../models/bankrequirements');
+var ApplicationResult = require('../models/applicationresults');
+var Application = require('../models/applications');
 var Logging = require('../common/logging');
+var VerificationController = require('../controllers/verificationController');
 var ResponseHelper = require('../common/response');
 
 module.exports = function(app) {
-
-    app.bankRequirements = null;
+    var verifier = new VerificationController();
 
     app.post("/verify", function (req, res) {
         try {
-            var name = req.body.name;
-            var income = 0;
-            if(req.body.hasOwnProperty('incomedetails')) {
-                var income = req.body.incomedetails.borrowers[0];
-            }
-            if(income == 0 && req.body.hasOwnProperty('income'))
-            {
-                income = req.body.income;
-            }
-            var debt = req.body.debt;
-            var bank = req.body.bank;
-            var result = true;
-            var reason = "You have been approved!";
 
-            Logging.log("Received verify request: " + name);
+            var application = new Application(req.body);
 
-            bank = findBank(bank);
+            var result = new ApplicationResult();
+            result.result = true;
+            result.reason = "You have been approved!";
 
-            if (debt / income > bank.debtToIncomeRatio) {
-                result = false
-                reason = "Debt to income ratio to high";
-            }
+            Logging.log("Received verify request: " + application.name);
 
-            ResponseHelper.sendResponseObject(res, new ApplicationResults({
-                name: name,
-                result: result,
-                reason: reason
-            }));
+            var bank = verifier.findBank(application.bank);
+            if(bank == null)
+                throw "Unable to find bank specified in application";
+
+            result.LTVGuideline = verifier.calculateLTVGuideline(application, bank);
+            //result.LTVActual
+
+            if (application.debt / application.income > bank.debtToIncomeRatio) {
+                result.result = false;
+                result.reason = "Debt to income ratio to high";
+           }
+
+            ResponseHelper.sendResponseObject(res, result);
         }catch(err)
         {
             ResponseHelper.sendError(res, err, "", 500, "Internal server error on verify: ");
         }
     });
 
-    function loadRequirements()
-    {
-        BankRequirements.find(function(err, bankRequirements) {
-            if(!err) {
-                Logging.log("Retreived records from DB: " +
-                    bankRequirements.bankName
-                );
-                app.bankRequirements = bankRequirements;
-            }
-        });
-    };
-
-    function findBank(bank)
-    {
-        for(var i=0;i<app.bankRequirements.length;i++) {
-            if(app.bankRequirements[i]._id == bank)
-                return app.bankRequirements[i];
-        }
-        Logging.log("Was unable to find bank requirement from verify request with id:" + bank);
-        Logging.log("Current banks: " + app.bankRequirements)
-        return null;
-    }
-
     function preLoad(bankName, debtToIncome) {
-        BankRequirements.findOne({bankName: bankName}, function(err, bankRequirement) {
+        BankRequirement.findOne({bankName: bankName}, function(err, bankRequirement) {
             if(bankRequirement != null) {
                 Logging.log("Retreived bankRequirement from DB skipping seed");
             }else {
 
-                var requirement = new BankRequirements({
+                var requirement = new BankRequirement({
                     bankName: bankName,
-                    debtToIncomeRatio: debtToIncome
+                    debtToIncomeRatio: debtToIncome,
+                    minLoan: 250000,
+                    maxLoan: 20000000,
+                    minFICO: 700,
+                    LTV: {
+                        LTVThreshold1: 1000000,
+                        LTVThreshold2: 2000000,
+                        LTVThreshold3: 2500000,
+                        LTVThreshold4: 20000000,
+                        maxLTV1: 0.8,
+                        maxLTV2: 0.8,
+                        maxLTV3: 0.7,
+                        maxLTV4: 0.65
+                    }
                 });
 
                 requirement.save(function (err) {
@@ -86,7 +71,7 @@ module.exports = function(app) {
                         Logging.log("Error saving bankRequirement record! " + err);
                     else {
                         Logging.log("Saved bankRequirement record! ");
-                        loadRequirements();
+                        verifier.loadRequirements();
                     }
                 });
             }
@@ -94,6 +79,5 @@ module.exports = function(app) {
     }
 
     preLoad("WAMU", 1);
-    preLoad("BankOfBurgess", 0.5)
-    loadRequirements();
+    preLoad("BankOfBurgess", 0.5);
 }
