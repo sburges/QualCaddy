@@ -15,10 +15,17 @@ var bankRequirementsSchema = mongoose.Schema({
         LTVThreshold2: { type: Number, min: 0, default: 0},
         LTVThreshold3: { type: Number, min: 0, default: 0},
         LTVThreshold4: { type: Number, min: 0, default: 0},
-        maxLTV1: { type: Number, min: 0, default: 0},
-        maxLTV2: { type: Number, min: 0, default: 0},
-        maxLTV3: { type: Number, min: 0, default: 0},
-        maxLTV4: { type: Number, min: 0, default: 0},
+        maxLTV1: { type: Number, min: 0, max: 1, default: 0},
+        maxLTV2: { type: Number, min: 0, max: 1, default: 0},
+        maxLTV3: { type: Number, min: 0, max: 1, default: 0},
+        maxLTV4: { type: Number, min: 0, max: 1, default: 0},
+    },
+    DTI: {
+        maxDTI: { type: Number, min: 0, max: 1, default: 0},
+        nonQMDTILow: { type: Number, min: 0, default: 0},
+        nonQMDTIHigh: { type: Number, min: 0, default: 0},
+        nonQMClass1FICO: { type: Number, min: 0, default: 0},
+        nonQMClass2FICO: { type: Number, min: 0, default: 0}
     }
 })
 
