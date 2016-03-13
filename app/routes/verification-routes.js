@@ -3,7 +3,6 @@
  */
 
 var BankRequirement = require('../models/bankrequirements');
-var ApplicationResult = require('../models/applicationresults');
 var Application = require('../models/applications');
 var Logging = require('../common/logging');
 var VerificationController = require('../controllers/verificationController');
