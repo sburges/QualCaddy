@@ -133,7 +133,7 @@ function VerificationController() {
             application.loaninformation.loantype == "HIGH LTV")
         {
             return HELOC_FICO_SCORE;
-        }else if (application.loaninformation.loantype == "PREFERRED" && application.loaninformation.loanProduct.includes("ARM"))
+        }else if (application.loaninformation.loantype == "PREFERRED" && (application.loaninformation.loanProduct.indexOf("ARM") > -1))
         {
             return this.caculateNonQMMinFICO(application, bank);
         }else{
