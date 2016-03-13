@@ -51,7 +51,8 @@ var fakeapplication = new Application({
         willOccupy: true,
         expectedLoanLength: 30,
         useGiftFunds: false,
-        useTrust: false
+        useTrust: false,
+        FICO: 754
     }
 });
 
@@ -111,8 +112,8 @@ describe('VERIFICATION UNIT TESTS', function() {
     });
 
     it('should calculate LTV Actual', function (done) {
-        var guideline = verifier.calculateLTVActual(fakeapplication, fakeBank);
-        expect(guideline).to.equal(0.8);
+        var actual = verifier.calculateLTVActual(fakeapplication, fakeBank);
+        expect(actual).to.equal(0.8);
         done();
     });
 
@@ -123,9 +124,20 @@ describe('VERIFICATION UNIT TESTS', function() {
     });
 
     it('should calculate DTI Actual', function (done) {
-        var guideline = verifier.calculateDTIActual(fakeapplication, fakeBank);
-        expect(guideline).to.equal(0.4887);
+        var actual = verifier.calculateDTIActual(fakeapplication, fakeBank);
+        expect(actual).to.equal(0.4887);
         done();
     });
 
+    it('should calculate FICO Guideline', function (done) {
+        var guideline = verifier.calculateFICOGuideline(fakeapplication, fakeBank);
+        expect(guideline).to.equal(0);
+        done();
+    });
+
+    it('should calculate FICO Actual', function (done) {
+        var actual = verifier.calculateFICOActual(fakeapplication);
+        expect(actual).to.equal(754);
+        done();
+    });
 });

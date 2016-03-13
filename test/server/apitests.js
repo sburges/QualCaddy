@@ -49,7 +49,8 @@ var fakeapplication = new Application({
         willOccupy: true,
         expectedLoanLength: 30,
         useGiftFunds: false,
-        useTrust: false
+        useTrust: false,
+        FICO: 754
     }
 });
 

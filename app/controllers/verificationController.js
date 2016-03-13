@@ -39,10 +39,11 @@ function VerificationController() {
         applicationResult.reason = "You have been approved!";
 
         applicationResult.LTVGuideline = this.calculateLTVGuideline(application, bank);
-        applicationResult.LTVActual = this.calculateLTVActual(application, bank);
+        applicationResult.LTVActual = this.calculateLTVActual(application);
         applicationResult.DTIGuideline = this.calculateDTIGuideline(application, bank);
-        applicationResult.FICOGuideline = this.calculateFICOGuidelines(application, bank);
-
+        applicationResult.DTIActual = this.calculateDTIActual(application, bank);
+        applicationResult.FICOGuideline = this.calculateFICOGuideline(application, bank);
+        applicationResult.FICOActual = this.calculateFICOActual(application);
 
 
         if (application.debt / application.income > bank.debtToIncomeRatio) {
@@ -51,7 +52,7 @@ function VerificationController() {
         }
 
         return applicationResult;
-    }
+    };
 
     this.calculateLoanAmount = function(application)
     {
@@ -76,12 +77,12 @@ function VerificationController() {
     };
 
     //(1st Loan Amount – Second Loan Amount) / Purchase Price
-    this.calculateLTVActual = function(application, bank)
+    this.calculateLTVActual = function(application)
     {
         var loanamount = this.calculateLoanAmount(application);
         return (loanamount - application.loaninformation.secondLoanAmount) /
                 application.loaninformation.purchasePrice;
-    }
+    };
 
     //IF (1st Loan Amount > 1.5M && 1st Loan Amount <= 2000000 && LTV > 0.75 && LTV <= 0.8)
     //RETURN 0.43
@@ -97,29 +98,29 @@ function VerificationController() {
         }else{
             return bank.DTI.maxDTI;
         }
-    }
+    };
 
     this.calculateTotalHousePayment = function(application)
     {
         //TODO
-    }
+    };
 
     this.calculateTotalLiabilities = function(application)
     {
         //TODO
-    }
+    };
 
     this.calculateTotalIncome = function(application)
     {
         //TODO
-    }
+    };
 
     //DTI = (Total Housing Payment + Total Liabilities) / Total Income
     this.calculateDTIActual = function(application, bank)
     {
         //TODO
         return 0.4887
-    }
+    };
 
     //IF (Loan Type = “HELOC IO – HIGH LTV”)
     //RETURN 740
@@ -127,9 +128,9 @@ function VerificationController() {
     //RETURN NonQM Min FICO
     //ELSE
     //RETURN Min FICO
-    this.calculateFICOGuidelines = function(application, bank)
+    this.calculateFICOGuideline = function(application, bank)
     {
-        if(application.loaninformation.loantype == "HELOC IO" ||
+            if(application.loaninformation.loantype == "HELOC IO" ||
             application.loaninformation.loantype == "HIGH LTV")
         {
             return HELOC_FICO_SCORE;
@@ -139,7 +140,7 @@ function VerificationController() {
         }else{
             return bank.minFICO;
         }
-    }
+    };
 
     //IF (DTI >= NonQM DTI Low && DTI < NonQM DTI High)
     //RETURN NonQM Class 1 FICO
@@ -158,13 +159,14 @@ function VerificationController() {
             //TODO THIS HAS TO BECOME A BAD VALUE SOMEHOW: SVP APPROVAL REQUIRED
             return 0;
         }
-    }
+    };
+
+    this.calculateFICOActual = function(application)
+    {
+        return application.borrowerdetails.FICO;
+    };
 
     this.loadRequirements();
 }
-
-
-
-
 
 module.exports = VerificationController;
