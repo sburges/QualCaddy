@@ -2,10 +2,9 @@
  * Created by shayneburgess on 1/6/16.
  */
 
-var mongoose = require('mongoose')
-    , Schema = mongoose.Schema;
-var borrowerSchema = require('./borrowers');
-var bankrequirements = require('./bankrequirements');
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema,
+    bankrequirements = require('./bankrequirements');
 
 var applicationSchema = mongoose.Schema({
     name: String,
@@ -38,7 +37,7 @@ var applicationSchema = mongoose.Schema({
     },
     incomedetails: {
         borrowers: { type: [Number], default: [ 0 ] },
-        properties: { type: [Number], default: [ 0 ] },
+        properties: { type: [Number], default: [ 0 ] }
     },
     liabilities: {
         properties: { type: [Number], default: [ 0 ] },
@@ -49,14 +48,9 @@ var applicationSchema = mongoose.Schema({
         willOccupy: { type: Boolean, default: true },
         expectedLoanLength: { type: Number, min: 0, default: 0 },
         useGiftFunds: { type: Boolean, default: false },
-        useTrust: { type: Boolean, default: false }
+        useTrust: { type: Boolean, default: false },
+        FICO: { type: Number, default: 0}
     }
-})
-
-/*
-applicationSchema.schema.path('loantype').validate(function (value) {
-    return /FHA|CONF|FIRST LIEN HELOC|FIRST LIEN HELOC - HIGH LTV|HIGH-BAL CONF|FREF INT ONLY|PREF HIGH LTV/i.test(value);
-}, 'Invalid Loan Type');
-*/
+});
 
 module.exports = mongoose.model('Applications', applicationSchema);
