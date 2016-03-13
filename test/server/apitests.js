@@ -21,10 +21,10 @@ var fakeapplication = new Application({
         loanCategory: "GOVT & NON-CONFORM",
         loanProduct: "10 Year ARM",
         purchasePrice: 1500000,
-        downpayment: 20,
+        downpayment: 0.2,
         pmiFactor: 0,
         estimatedClosingCosts: 10000,
-        firstMortgageRate: 3.65,
+        firstMortgageRate: 0.0365,
         lengthOfFirstMortgage: 30,
         secondMortgageRate: 0,
         secondLoanAmount: 0,
@@ -34,7 +34,7 @@ var fakeapplication = new Application({
         occupancyType: "Primary Residence",
         numberofUnits: 1,
         monthlyHOAInsurance: 250,
-        propertyTax: 1.25
+        propertyTax: 0.0125
     },
     incomedetails: {
         borrowers: [10000,5000],
